@@ -1,5 +1,7 @@
 ARG CPU_ARCH=amd64
 
+FROM ${CPU_ARCH}/ubuntu:22.04 
+
 FROM ${CPU_ARCH}/ros:humble-ros-core AS build-env
 ENV DEBIAN_FRONTEND=noninteractive \
     BUILD_HOME=/var/lib/build \
