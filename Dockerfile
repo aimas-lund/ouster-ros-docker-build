@@ -5,6 +5,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BUILD_HOME=/var/lib/build \
     OUSTER_ROS_PATH=/opt/ros2_ws/src/ouster-ros
 
+SHELL ["/bin/bash", "-c"]
+
 RUN set -xue \
 # Turn off installing extra packages globally to slim down rosdep install
 && echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/01norecommend \
@@ -47,8 +49,6 @@ RUN set -xe \
 
 
 FROM build-env
-
-SHELL ["/bin/bash", "-c"]
 
 RUN source /opt/ros/humble/setup.bash && colcon build \
     --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release \
