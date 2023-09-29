@@ -1,8 +1,5 @@
-ARG CPU_ARCH=amd64
+FROM ros:humble-ros-core AS build-env
 
-FROM ${CPU_ARCH}/ubuntu:22.04 
-
-FROM ${CPU_ARCH}/ros:humble-ros-core AS build-env
 ENV DEBIAN_FRONTEND=noninteractive \
     BUILD_HOME=/var/lib/build \
     OUSTER_ROS_PATH=/opt/ros2_ws/src/ouster-ros
