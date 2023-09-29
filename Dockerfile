@@ -1,6 +1,6 @@
-ARG ROS_DISTRO=rolling
+ARG CPU_ARCH=amd64
 
-FROM ros:${ROS_DISTRO}-ros-core AS build-env
+FROM ${CPU_ARCH}/ros:humble-ros-core AS build-env
 ENV DEBIAN_FRONTEND=noninteractive \
     BUILD_HOME=/var/lib/build \
     OUSTER_ROS_PATH=/opt/ros2_ws/src/ouster-ros
@@ -34,7 +34,7 @@ COPY --chown=build:build . $OUSTER_ROS_PATH
 RUN set -xe         \
 && apt-get update   \
 && rosdep init      \
-&& rosdep update --rosdistro=$ROS_DISTRO \
+&& rosdep update --rosdistro=humble \
 && rosdep install --from-paths $OUSTER_ROS_PATH -y --ignore-src
 
 
@@ -50,11 +50,11 @@ FROM build-env
 
 SHELL ["/bin/bash", "-c"]
 
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && colcon build \
+RUN source /opt/ros/humble/setup.bash && colcon build \
     --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations"
 
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && colcon test \
+RUN source /opt/ros/humble/setup.bash && colcon test \
     --ctest-args tests ouster_ros --rerun-failed --output-on-failure
 
 # Entrypoint for running Ouster ros:

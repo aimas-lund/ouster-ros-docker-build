@@ -14,21 +14,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro:
-          - humble
+        cpu_arch:
+          - amd64
+          - arm64v8
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Build the Docker image
-        run: |
           
-      - name: Build the Docker image
+      - name: Build & Push ${{ matrix.cpu_arch }} the Docker image
         run: |
           docker login \
             -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p ${{ secrets.DOCKER_HUB_TOKEN }}
             docker build .                                    \
-            --build-arg ROS_DISTRO=${{ matrix.ros_distro }} \
+            --build-arg CPU_ARCH=${{ matrix.cpu_arch }} \
             --file Dockerfile                               \
-            --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
+            --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.cpu_arch }}-$GITHUB_SHA
           docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
