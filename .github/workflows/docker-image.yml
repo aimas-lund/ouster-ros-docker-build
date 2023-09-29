@@ -14,19 +14,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cpu_arch:
+        arch:
           - arm64v8
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
           
-      - name: Build & Push ${{ matrix.cpu_arch }} the Docker image
+      - name: Build & Push ${{ matrix.arch }} the Docker image
         run: |
           docker login \
             -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p ${{ secrets.DOCKER_HUB_TOKEN }}
             docker build .                                    \
-            --build-arg CPU_ARCH=${{ matrix.cpu_arch }} \
+            --build-arg CPU_ARCH=${{ matrix.arch }} \
             --file Dockerfile                               \
-            --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.cpu_arch }}-$GITHUB_SHA
+            --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.arch }}-$GITHUB_SHA
           docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
