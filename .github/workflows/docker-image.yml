@@ -15,16 +15,20 @@ jobs:
       fail-fast: false
       matrix:
         ros_distro:
-          - rolling
           - humble
-          - iron
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
       - name: Build the Docker image
         run: |
-          docker build .                                    \
+          
+      - name: Build the Docker image
+        run: |
+          docker login \
+            -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p ${{ secrets.DOCKER_HUB_TOKEN }}
+            docker build .                                    \
             --build-arg ROS_DISTRO=${{ matrix.ros_distro }} \
             --file Dockerfile                               \
-            --tag ouster-ros-${{ matrix.ros_distro }}:$(date +%s)
+            --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
+          docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
